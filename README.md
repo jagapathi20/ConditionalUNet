@@ -2,7 +2,7 @@
 
 A PyTorch implementation of Conditional UNet for **polygon coloring**. This model takes polygon outlines as input and generates colored polygons based on specified color conditions. The project demonstrates conditional image generation using a UNet architecture with color embeddings.
 
-## 🎯 Project Overview
+## Project Overview
 
 This ConditionalUNet learns to:
 - Take black and white polygon outlines as input
@@ -10,7 +10,7 @@ This ConditionalUNet learns to:
 - Handle various polygon shapes (triangles to octagons)
 - Support both real and synthetic training data
 
-## 🚀 Features
+## Features
 
 - **Conditional Color Generation**: Generate polygons in 8 different colors
 - **UNet Architecture**: Classic encoder-decoder with skip connections
@@ -19,7 +19,7 @@ This ConditionalUNet learns to:
 - **Data Augmentation**: Rotation and flipping for better generalization
 - **Model Checkpointing**: Automatic saving of best models
 
-## 📋 Requirements
+## Requirements
 
 ```
 torch>=1.8.0
@@ -32,7 +32,7 @@ pathlib
 json
 ```
 
-## 🔧 Installation
+## Installation
 
 ### Option 1: Local Setup
 ```bash
@@ -47,7 +47,7 @@ pip install torch torchvision numpy opencv-python pillow tqdm
 ### Option 2: Google Colab (Recommended for Beginners)
 Click the Colab link in the Usage section - no installation required!
 
-## 📊 Dataset Structure
+## Dataset Structure
 
 Your dataset should be organized as follows:
 
@@ -74,18 +74,18 @@ dataset/
 ]
 ```
 
-## 📦 Pre-trained Model
+## Pre-trained Model
 
 Download the pre-trained model weights:
 **[🔗 Download Trained Model](https://drive.google.com/file/d/11t5PHTNSSkouYGKjBtNVMz3dCqp7AOpK/view?usp=sharing)**
 
-## 🎮 Usage
+## Usage
 
-### 🚀 Quick Start with Google Colab
+### Quick Start with Google Colab
 
 For easy experimentation without local setup:
 
-**[📓 Open in Google Colab](https://colab.research.google.com/drive/1RJK4hH7fe0Hp-ajr0wX8-goIff3Bhei8?usp=sharing)**
+**[ Open in Google Colab](https://colab.research.google.com/drive/1RJK4hH7fe0Hp-ajr0wX8-goIff3Bhei8?usp=sharing)**
 
 The Colab notebook includes:
 - Complete setup and installation
@@ -154,7 +154,7 @@ from data_synthesis import create_synthetic_polygons
 create_synthetic_polygons(num_samples=1000, image_size=128)
 ```
 
-## 🏗️ Model Architecture
+## Model Architecture
 
 The ConditionalUNet consists of:
 
@@ -178,7 +178,7 @@ The ConditionalUNet consists of:
 - **Loss Function**: MSE Loss
 - **Batch Size**: 32
 - **Image Size**: 128x128
-- **Epochs**: 100
+- **Epochs**: 150
 - **Colors Supported**: 8 (red, blue, green, yellow, purple, orange, cyan, magenta)
 
 ## 📁 File Structure
@@ -193,7 +193,7 @@ ConditionalUNet/
 └── models/              # Saved model checkpoints
 ```
 
-## 🎨 Supported Colors
+## Supported Colors
 
 The model supports 8 different colors:
 1. **Red** (255, 0, 0)
@@ -205,7 +205,7 @@ The model supports 8 different colors:
 7. **Cyan** (0, 255, 255)
 8. **Magenta** (255, 0, 255)
 
-## 🔬 Model Performance
+## Model Performance
 
 The model uses:
 - **Training Loss**: MSE between generated and target colored polygons
@@ -213,7 +213,7 @@ The model uses:
 - **Learning Rate Scheduling**: Reduces LR on validation plateau
 - **Best Model Saving**: Automatically saves best performing checkpoint
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. Some areas for improvement:
 - Support for more colors
@@ -221,17 +221,17 @@ Contributions are welcome! Please feel free to submit a Pull Request. Some areas
 - Advanced conditioning mechanisms
 - Better loss functions
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - UNet architecture based on the original paper by Ronneberger et al.
 - Conditional generation techniques for controlled image synthesis
 - PyTorch community for excellent deep learning framework
 
-## 📚 Citation
+## Citation
 
 If you use this work in your research, please cite:
 
