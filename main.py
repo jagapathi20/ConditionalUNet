@@ -7,8 +7,9 @@ from pathlib import Path
 
 from UNet import UNet
 from dataset import PolygonDataset
+from data_synthesis import create_synthetic_polygons
 
-LEARNING_RATE = 3E-4
+LEARNING_RATE = 0.001
 BATCH_SIZE = 32
 EPOCHS = 100
 IMAGE_SIZE = 128
@@ -19,6 +20,13 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 transform = transforms.Compose([
         transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+        transforms.ToTensor(),
+    ])
+
+augment_transform = transforms.Compose([
+        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+        transforms.RandomRotation(degrees=15),
+        transforms.RandomHorizontalFlip(p=0.5),
         transforms.ToTensor(),
     ])
 
@@ -36,16 +44,34 @@ val_dataset = PolygonDataset(
         transform=transform
     )
 
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
-val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
+try:
+    synthetic_dataset = PolygonDataset(
+            'synthetic/data.json',
+            'synthetic/inputs',
+            'synthetic/outputs',
+            transform=augment_transform,
+            augment=True
+        )
+        
+        # Combine datasets
+    from torch.utils.data import ConcatDataset
+    combined_dataset = ConcatDataset([train_dataset, synthetic_dataset])
+    print(f"Combined dataset size: {len(combined_dataset)}")
+        
+    train_dataset = combined_dataset
+except:
+      print("Synthetic data not found, using original dataset only")
 
-num_colors = len(val_dataset.colors)
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
+
+num_colors = len(train_dataset.colors)
 
 model = UNet(num_colors=num_colors).to(device)
-optimizer = optim.AdamW(model.prameters(), lr =LEARNING_RATE)
-criterion = nn.BCEWithLogitsLoss()
+optimizer = optim.AdamW(model.parameters(), lr =LEARNING_RATE, weight_decay=0.01)
+criterion = nn.MSELoss()
 
-scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.5)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10, verbose=True)
     
 train_losses = []
 val_losses = []
@@ -92,7 +118,7 @@ for epoch in range(EPOCHS):
     val_loss /= len(val_loader)
     val_losses.append(val_loss)
         
-    scheduler.step()
+    scheduler.step(val_loss)
         
     
     if val_loss < best_val_loss:

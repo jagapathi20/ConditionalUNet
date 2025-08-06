@@ -45,4 +45,4 @@ class UNet(nn.Module):
 
         out = self.out(up_4)
 
-        return torch.sigmoid(out)
+        return out
